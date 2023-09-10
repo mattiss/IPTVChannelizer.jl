@@ -1,7 +1,7 @@
 const REGEX_M3U_FILE_HEADER = r"^#EXTM3U$"
 const REGEX_M3U_CHANNEL = r"^#EXTINF:-1 (?<attributes>.*),(?<name>.*)$"
-const REGEX_M3U_CHANNEL_NAME = r"^(?<country>.*) - (?<name>.*?)( (?<res>(SD)|(HD)|(FHD)|(HEVC)))?$"
-const REGEX_M3U_CHANNEL_ATTRIBUTES = r"^#EXTINF:-1,((?<id>.*):)?"
+const REGEX_M3U_CHANNEL_NAME = r"^(?<country>.*) - (?<name>.*?)( (?<res>(SD)|(HD)|(FHD)|(UHD)|(HEVC)))?$"
+const REGEX_M3U_CHANNEL_ATTRIBUTES = r"(?<key>.*?)=(\"(?<value>.*?)\") ?"
 
 const M3U_FILE_HEADER = "#EXTM3U"
 
@@ -22,10 +22,12 @@ function parse_playlist(m3u_file)
             if (!isnothing(r))
                 infos = Dict()
                 attributes, name = r["attributes"], r["name"]
-                infos = parse_name(name)
+                infos = merge(parse_name(name),parse_attributes(attributes))
+                # println(infos)
             else
-                channel = (country = infos["country"], group = group, id = id, name = infos["name"], res = infos["res"], url=ln)
-                push!(channels, channel)
+                # channel = (country = infos["country"], group = group, id = id, name = infos["name"], res = infos["res"], url=ln)
+                infos["url"] = ln
+                push!(channels, infos)
             end
         end
         println("Found $(length(channels)) channels")
@@ -35,7 +37,7 @@ function parse_playlist(m3u_file)
 end
 
 function parse_attributes(att)
-    println(att)
+    return Dict( m["key"] => m["value"] for m in eachmatch(REGEX_M3U_CHANNEL_ATTRIBUTES,att))
 end
 
 function parse_name(name)
