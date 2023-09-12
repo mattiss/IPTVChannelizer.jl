@@ -1,7 +1,7 @@
 using IPTVChannelizer
 using Test
 
-# include("runtests_parser.jl")
+# include("runtests_lexerparser.jl")
 
 @testset "IPTVChannelizer.jl" begin
 
@@ -22,6 +22,12 @@ using Test
         @test isequal(d["tvg-name"], "##### GENERAL #####")
         @test isequal(d["tvg-logo"], "http://logo.protv.cc/picons/logos/france/FRANCE.png")
         @test isequal(d["group-title"], "|EU| FRANCE HEVC")
+    end
+    @testset "M3U Parser - Parse attributes \"tvg-id=\"\" tvg-name=\"FR - \"Nosferatu\" - Un film comme un vampire  (2022)\" tvg-logo=\"\" group-title=\"VOD - RÉCEMMENT AJOUTER [FR]\"\"" begin
+        d = IPTVChannelizer.parse_attributes("tvg-id=\"\" tvg-name=\"FR - \"Nosferatu\" - Un film comme un vampire  (2022)\" tvg-logo=\"\" group-title=\"VOD - RÉCEMMENT AJOUTER [FR]\"")
+        @test isequal(d["tvg-name"], "FR - \"Nosferatu\" - Un film comme un vampire  (2022)")
+        @test isequal(d["tvg-logo"], "")
+        @test isequal(d["group-title"], "VOD - RÉCEMMENT AJOUTER [FR]")
     end
     @testset "Load Playlist" begin
         m3u_file = "./data/input/playlist_small.m3u"
