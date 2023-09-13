@@ -1,14 +1,28 @@
+const M3U_FILE_HEADER = "#EXTM3U"
 
-function print_channel(name, group, url)
-    println("#EXTINF:-1 group-title=\"$group\",$name $res")
-    println(url)
+function export_playlist(playlist, m3u_output_file)
+    open(m3u_output_file, "w") do file
+        println(file, M3U_FILE_HEADER)
+        for channel in playlist
+            println(file, get_channel_description(channel))            
+        end
+    end
+end
+
+function get_attributes(channel)
+    join(["$attribute=\"$(channel[Symbol(attribute)])\"" for attribute in ["tvg-id" "tvg-name" "tvg-logo" "group-title"]]," ")
+end
+
+function get_channel_description(channel)
+    attr = get_attributes(channel)
+    "#EXTINF:-1 $attr,$(channel.name) $(channel.res)\n$(channel.url)"
 end
 
 function print_df(df)
     s = ""
     println(M3U_FILE_HEADER)
     for row in eachrow(df)
-        print_channel(row["name"], row["group"], row["url"])   
+        get_channel_description(row["name"], row["group"], row["url"])   
     end
 end
 
