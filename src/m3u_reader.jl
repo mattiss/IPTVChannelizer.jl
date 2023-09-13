@@ -2,6 +2,7 @@ const REGEX_M3U_FILE_HEADER = r"^#EXTM3U$"
 const REGEX_M3U_CHANNEL = r"^#EXTINF:-1 (?<attributes>.*),(?<name>.*)$"
 const REGEX_M3U_CHANNEL_NAME = r"^(?<country>.*) - (?<name>.*?)( (?<res>(SD)|(HD)|(FHD)|(UHD)|(HEVC)))?$"
 const REGEX_M3U_CHANNEL_ATTRIBUTES = r"(?<key>.*?)=(\"(?<value>.*?)\") ?"
+# "(?<key>tvg-id|tvg-name|tvg-logo|group-title)=(\"(?<value>.*?)\" ?(?=tvg-id|tvg-name|tvg-logo|group-title|\Z))?"
 
 const M3U_FILE_HEADER = "#EXTM3U"
 
